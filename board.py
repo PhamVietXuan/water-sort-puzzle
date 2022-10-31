@@ -3,6 +3,7 @@ from copy import deepcopy
 
 class Board:
     """Abstraction of state"""
+
     def __init__(self, board, parent=None, from_which=-1, to_which=-1):
         """Initialize a board(state)
 
@@ -14,7 +15,7 @@ class Board:
             from_which [int]: index of bottle which pops color blocks
             to_which [int]: index of bottle which push color blocks
         """
-        self.board = board
+        self.board = board #2D list, 
         self.parent = parent
         self.from_which = from_which
         self.to_which = to_which
@@ -36,10 +37,12 @@ class Board:
                 continue
 
             for j in range(n_bottles):
-                if i == j: continue
+                if i == j:
+                    continue
                 if self.board[j].finished:
                     continue
-                pseudo_push_res = self.board[j].push(pseudo_pop_res, pseudo=True)
+                pseudo_push_res = self.board[j].push(
+                    pseudo_pop_res, pseudo=True)
                 if pseudo_push_res == -1:
                     continue
 
@@ -71,6 +74,12 @@ class Board:
             bottle_data[1] == bottle_data[2] and \
             bottle_data[2] == bottle_data[3]
 
+    def total_color_remain(self):
+        sum = 0
+        for i in range(0, len(self.board)):
+            sum += self.board[i].remain_color()
+
+        return sum
     @property
     def string(self):
         """String representation of the current state"""
@@ -80,4 +89,3 @@ class Board:
     def board_factory(cls, board, parent=None, from_which=-1, to_which=-1):
         """Generate new state"""
         return cls(board, parent=parent, from_which=from_which, to_which=to_which)
-

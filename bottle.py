@@ -1,3 +1,4 @@
+from tokenize import PseudoExtras
 from color import Colors
 
 
@@ -15,7 +16,7 @@ class Bottle:
         self.number = number
         self.data = colors.copy()
 
-        if self.string == '0000': # empty bottle
+        if self.string == '0000':  # empty bottle
             self.top_pointer = -1
         else:
             curr = 0
@@ -83,7 +84,8 @@ class Bottle:
             return -1
 
         if not pseudo:
-            self.data[self.top_pointer+1:self.top_pointer+1+len(colors)] = colors
+            self.data[self.top_pointer +
+                      1:self.top_pointer+1+len(colors)] = colors
             self.top_pointer += len(colors)
         return 0
 
@@ -93,15 +95,20 @@ class Bottle:
 
         If true, then this bottle will not accept new pop and push operations"""
         return self.data[0] != Colors.BLANK and \
-               self.data[0] == self.data[1] and \
-               self.data[1] == self.data[2] and \
-               self.data[2] == self.data[3]
+            self.data[0] == self.data[1] and \
+            self.data[1] == self.data[2] and \
+            self.data[2] == self.data[3]
+
+    def remain_color(self):
+        """Number of colors left to complete 1 bottle.
+
+        is bottel 
+        """
+        res = len(set(self.data)) - 1
+        return res
 
 
 if __name__ == '__main__':
     bow = Bottle(0, [1, 2, 2, 2])
-    print(bow.pop())
-
-
-
-
+    lst = [1, 2, 3,2,5]
+    print(lst.pop())

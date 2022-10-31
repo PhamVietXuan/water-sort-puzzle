@@ -1,15 +1,36 @@
 import argparse
+from mimetypes import init
 import time
 from board import Board
 from input import get_start_board
 
 
+def cal_cost(curr_state, next_state):
+    """
+    calculate cost when move from curr_state to next_state
+
+    agrs:
+    curr_state: current state
+    next_state: next state
+
+    return:
+
+    number of steps to move curr_state to next_state.
+    ex: 00001111 -> 10001110 : 1 
+    """
+
+    count = 0
+    for i in range(0, len(curr_state.string)):
+        if curr_state.string[i] != next_state.string[i]:
+            count += 1
+
+    return count/2
+
+
 def bfs(init_board):
     """BFS searching algorithm
-
     Args:
         init_board: initial board/state
-
     Returns:
         curr_state: one possible final state
         steps: total moving steps
@@ -57,6 +78,8 @@ def dfs(init_board):
     start = time.time()
     while stack:
         curr_state = stack.pop()
+       # print()
+      #  print(curr_state.string)
         if curr_state.state_checking() is True:
             print('Elapsed time: {:.4f}s'.format(time.time() - start))
             return curr_state
@@ -65,6 +88,62 @@ def dfs(init_board):
             visited.add(curr_state.string)
             for next_state in curr_state.next_boards():
                 stack.append(next_state)
+
+
+def a_star(init_board):
+    """ A* searching algorithm
+        init_board: initial board/state
+
+        heuristic function: h(state) = number of color remained
+        cost function: g(state)  number of steps to move from init state to goal state
+
+
+        Returns:
+        curr_state: one possible final state
+    """
+
+    stack = []
+    stack.append(init_board)
+    cost = dict()
+    visited = set()
+    cost[init_board] = 0
+
+    curr_state = init_board
+    print(len(curr_state.next_boards()))
+
+    if curr_state.state_checking() is True:
+        return curr_state
+
+    if curr_state.string not in visited:
+        visited.add(curr_state.string)
+        for next_state in curr_state.next_boards():
+            stack.append(next_state)
+            cost[next_state] = cost[curr_state] + 1
+    visited.add(init_board.string)
+
+    print(len(stack))
+    while stack:
+
+        # get state which is min g()+h() in list state
+        i = 0
+        while stack[i].string in visited:
+            i += 1
+        curr_state = stack[i]
+        f_min = cost[curr_state] + curr_state.total_color_remain()
+        for i in range(0, len(stack)):
+            if stack[i].string not in visited and f_min <= cost[stack[i]] + stack[i].total_color_remain():
+                curr_state = stack[i]
+                f_min = cost[stack[i]] + stack[i].total_color_remain()
+
+        if curr_state.state_checking() is True:
+            return curr_state
+
+        if curr_state.string not in visited:
+
+            visited.add(curr_state.string)
+            for next_state in curr_state.next_boards():
+                stack.append(next_state)
+                cost[next_state] = cost[curr_state] + 1
 
 
 if __name__ == '__main__':
@@ -77,8 +156,8 @@ if __name__ == '__main__':
     start_board = Board(get_start_board(), parent=None)
 
     # 3. run searching algorithm
-    if args.search == 'bfs':
-        final_state, total_steps = bfs(init_board=start_board)
+    if args.search == 'a_star':
+        final_state = a_star(init_board=start_board)
     elif args.search == 'dfs':
         final_state = dfs(init_board=start_board)
     else:

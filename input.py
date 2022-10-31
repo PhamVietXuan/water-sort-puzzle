@@ -7,7 +7,7 @@ def get_start_board():
 
     Modify this function if you want to play new game level
 
-    NOTE: COLORS SHOULD BE INPUTED FROM BOTTOL BOTTOM TO TOP
+    NOTE:  SHOCOLORSULD BE INPUTED FROM BOTTOL BOTTOM TO TOP
     """
     N_BOTTLES = 14  # total number of bottles including empty bottles
     global_board = []
